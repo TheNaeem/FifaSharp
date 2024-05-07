@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33110.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FifaSharp", "FifaSharp\FifaSharp.csproj", "{66091738-FC49-492C-97FC-EB00A88C07A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FifaSharpTests", "FifaSharpTests\FifaSharpTests.csproj", "{D860A848-501B-461D-B3C9-A1088629F1C8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{66091738-FC49-492C-97FC-EB00A88C07A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66091738-FC49-492C-97FC-EB00A88C07A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66091738-FC49-492C-97FC-EB00A88C07A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66091738-FC49-492C-97FC-EB00A88C07A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D860A848-501B-461D-B3C9-A1088629F1C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D860A848-501B-461D-B3C9-A1088629F1C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D860A848-501B-461D-B3C9-A1088629F1C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D860A848-501B-461D-B3C9-A1088629F1C8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6278FB88-3456-463D-82D7-453BA5361715}
+	EndGlobalSection
+EndGlobal
