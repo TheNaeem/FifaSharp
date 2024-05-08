@@ -116,7 +116,7 @@ public class FutClient
     /// <returns>TradePile. Can be null.</returns>
     public async Task<TradePile?> RetrieveTradePileAsync()
     {
-        var response = await _session.ProcessRequestAsync("https://utas.mob.v2.fut.ea.com/ut/game/fc24/tradepile");
+        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/ut/game/fc24/tradepile");
 
         if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
             return default;
@@ -172,7 +172,7 @@ public class FutClient
     /// <returns>The messsages. Can be null.</returns>
     public async Task<FutMessages?> RetrieveMessagesAsync()
     {
-        var response = await _session.ProcessRequestAsync($"https://utas.mob.v1.fut.ea.com/ut/game/fifa23/message/list/template?nucPersId={PersonaId}&screen=webfuthub");
+        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/ut/game/fifa23/message/list/template?nucPersId={PersonaId}&screen=webfuthub");
 
         if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
             return default;
@@ -187,7 +187,7 @@ public class FutClient
     /// <returns>The search result. Can be null.</returns>
     public async Task<TransferMarket?> QueryTransferMarketAsync(TransferMarketQuery query)
     {
-        UriBuilder uri = new("https://utas.mob.v2.fut.ea.com/ut/game/fc24/transfermarket");
+        UriBuilder uri = new($"https://{EndpointDirectory.BASE_URL}/ut/game/fc24/transfermarket");
 
         uri.Query = $"num={query.ResultsNum}&start={query.ResultsStart}";
 
@@ -248,7 +248,7 @@ public class FutClient
 
     public async Task<BidResult?> BidOnTransferAsync(long tradeId, int amount)
     {
-        var request = new RestRequest($"https://utas.mob.v2.fut.ea.com/ut/game/fc24/trade/{tradeId}/bid", Method.Put);
+        var request = new RestRequest($"https://{EndpointDirectory.BASE_URL}/ut/game/fc24/trade/{tradeId}/bid", Method.Put);
         request.AddHeader("Content-Type", "application/json");
         request.AddHeader("Cache-Control", "no-cache");
         request.AddParameter("application/json", $"{{\"bid\":{amount}}}", ParameterType.RequestBody);
@@ -263,7 +263,7 @@ public class FutClient
 
     public async Task<UpdateTransferListStatus?> SendItemsToTransferListAsync(params long[] itemIds)
     {
-        var request = new RestRequest("https://utas.mob.v1.fut.ea.com/ut/game/fifa23/item", Method.Put);
+        var request = new RestRequest($"https://{EndpointDirectory.BASE_URL}/ut/game/fifa23/item", Method.Put);
         request.AddHeader("Content-Type", "application/json");
         request.AddHeader("Cache-Control", "no-cache");
 
@@ -298,7 +298,7 @@ public class FutClient
             }
         };
 
-        var request = new RestRequest("https://utas.mob.v1.fut.ea.com/ut/game/fifa23/auctionhouse", Method.Post);
+        var request = new RestRequest($"https://{EndpointDirectory.BASE_URL}/ut/game/fifa23/auctionhouse", Method.Post);
         request.AddHeader("Content-Type", "application/json");
         request.AddHeader("Cache-Control", "no-cache");
         request.AddParameter("application/json", JsonSerializer.Serialize(body), ParameterType.RequestBody);
@@ -311,10 +311,19 @@ public class FutClient
         return JsonSerializer.Deserialize<ListTransferStatus>(response.Content);
     }
 
-    public async Task Test()
+    public async Task<Evolutions?> RetrieveEvolutionsAsync(EvolutionsStatus status = EvolutionsStatus.NotStarted)
     {
-        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/ut/game/fc24/sbs/sets");
+        string slotStatus = string.Empty;
 
-        Console.WriteLine(response.Content);
+        if (status == EvolutionsStatus.NotStarted)
+            slotStatus = "NOT_STARTED";
+        else slotStatus = "STARTED";
+
+        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/ut/game/fc24/academy/hub?offset=0&count=100&sortOrder=asc&slotStatus={slotStatus}");
+
+        if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
+            return default;
+
+        return JsonSerializer.Deserialize<Evolutions>(response.Content);
     }
 }
