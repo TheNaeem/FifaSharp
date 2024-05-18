@@ -1,0 +1,66 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FifaSharp.Api.Enums;
+
+public enum AcademyEligibilityAttribute
+{
+    NONE,
+    OVR,
+    PACE,
+    SHOOTING,
+    PASSING,
+    DRIBBLING_MAIN,
+    DEFENSE,
+    PHYSICALITY,
+    ACCELERATION,
+    SPRINT_SPEED,
+    AGILITY,
+    BALANCE,
+    JUMPING,
+    STAMINA,
+    STRENGTH,
+    REACTIONS,
+    AGGRESSION,
+    COMPOSURE,
+    INTERCEPTIONS,
+    POSITIONING,
+    VISION,
+    BALL_CONTROL,
+    CROSSING,
+    DRIBBLING_SUB,
+    FINISHING,
+    FK_ACC,
+    HEADING_ACC,
+    LONG_PASSING,
+    SHORT_PASSING,
+    DEF_AWARENESS,
+    SHOT_POWER,
+    LONG_SHOTS,
+    STANDING_TACKLE,
+    SLIDING_TACKLE,
+    VOLLEYS,
+    CURVE,
+    PENALTIES,
+    WEAK_FOOT,
+    SKILL_MOVES,
+    ATTACK_WORK_RATE,
+    DEFENSIVE_WORK_RATE,
+    DEFINITION_ID,
+    NATION,
+    CLUB,
+    LEAGUE,
+    RARITY,
+    RARITY_NEGATED,
+    POSITION,
+    POSITION_NEGATED,
+    POSSIBLE_POSITIONS_COUNT,
+    BASE_TRAITS_COUNT,
+    TOTAL_TRAITS_COUNT,
+    BASE_TRAIT_PRESENT,
+    ICON_TRAIT_PRESENT,
+    UNTRADEABLE
+}
