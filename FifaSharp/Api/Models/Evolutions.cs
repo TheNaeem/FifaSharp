@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using FifaSharp.Api.Enums;
+using System.Text.Json.Serialization;
 
 namespace FifaSharp.Api.Models;
 
@@ -161,5 +162,27 @@ public class Evolutions
 
         [JsonPropertyName("categoryId")]
         public int CategoryId { get; set; }
+
+        public Dictionary<AcademyEligibilityAttribute, int> GetRequirements()
+        {
+            Dictionary<AcademyEligibilityAttribute, int> ret = new();
+
+            AcademyEligibilityAttribute curr = default;
+
+            foreach (var req in ElgReqs)
+            {
+                switch (req.Type)
+                {
+                    case "PLAYER_ATTRIBUTE":
+                        curr = (AcademyEligibilityAttribute)req.EligibilityValue;
+                        break;
+                    case "ACADEMY_PLAYER_SLOTTING":
+                        ret[curr] = req.EligibilityValue;
+                        break;
+                }
+            }
+    
+            return ret;
+        }
     }
 }
