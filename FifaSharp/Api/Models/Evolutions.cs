@@ -163,21 +163,24 @@ public class Evolutions
         [JsonPropertyName("categoryId")]
         public int CategoryId { get; set; }
 
-        public Dictionary<AcademyEligibilityAttribute, int> GetRequirements()
+        public List<EvoRequirement> GetRequirements()
         {
-            Dictionary<AcademyEligibilityAttribute, int> ret = new();
+            List<EvoRequirement> ret = new();
 
-            AcademyEligibilityAttribute curr = default;
+            EvoRequirement curr = new();
 
             foreach (var req in ElgReqs)
             {
                 switch (req.Type)
                 {
                     case "PLAYER_ATTRIBUTE":
-                        curr = (AcademyEligibilityAttribute)req.EligibilityValue;
+                        curr.Attr = (AcademyEligibilityAttribute)req.EligibilityValue;
+                        break;
+                    case "SCOPE":
+                        curr.Scope = req.EligibilityValue;
                         break;
                     case "ACADEMY_PLAYER_SLOTTING":
-                        ret[curr] = req.EligibilityValue;
+                        curr.Value = req.EligibilityValue;
                         break;
                 }
             }
