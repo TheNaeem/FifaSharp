@@ -326,4 +326,14 @@ public class FutClient
 
         return JsonSerializer.Deserialize<Evolutions>(response.Content);
     }
+
+    public async Task<List<ObjectiveGroups>?> RetrieveObjectivesAsync()
+    {
+        var response = await _session.ProcessRequestAsync($"https://utas.mob.v2.prd.futc-ext.gcp.ea.com/ut/game/fc24/scmp/objective/categories/all");
+
+        if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
+            return default;
+
+        return JsonSerializer.Deserialize<List<ObjectiveGroups>>(response.Content);
+    }
 }

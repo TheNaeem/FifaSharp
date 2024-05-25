@@ -181,10 +181,12 @@ public class Evolutions
                         break;
                     case "ACADEMY_PLAYER_SLOTTING":
                         curr.Value = req.EligibilityValue;
+                        ret.Add(curr);
+                        curr = new();
                         break;
                 }
             }
-    
+
             return ret;
         }
     }
