@@ -50,8 +50,8 @@ public class FutAuthClient : RestClient
 
     private async Task<bool> TryFindSessionIdAsync()
     {
-        var fidResponse = await ExecuteAsync(new(EndpointDirectory.CREATE_AUTH_FID)); 
-        
+        var fidResponse = await ExecuteAsync(new(EndpointDirectory.CREATE_AUTH_FID));
+
         if (!fidResponse.IsSuccessful || string.IsNullOrEmpty(fidResponse.Content))
         {
             Log.Error("Response to get FID failed with status code {code}", fidResponse.StatusCode);
@@ -71,7 +71,7 @@ public class FutAuthClient : RestClient
         return true;
     }
 
-    public async Task<FutAccountSession?> TryCreateSessionAsync(string email, string pw, Func<Task<string?>> on2fa)
+    public async Task<FutAccountSession?> TryCreateSessionAsync(string email, string pw, Func<Task<string?>> on2fa, bool useEmail2fa)
     {
         if (!await TryRetrieveCookiesAsync() || !await TryFindSessionIdAsync())
             return null;
@@ -114,18 +114,19 @@ public class FutAuthClient : RestClient
             Log.Information("2fa required for account.");
 
             RestRequest send2fa = new(executeResponse.ResponseUri); // sends the code to the email
-            send2fa.AddParameter("codeType", "EMAIL");
-            send2fa.AddParameter("maskedDestination", email);
+            send2fa.AddParameter("codeType", useEmail2fa ? "EMAIL" : "APP");
+            send2fa.AddParameter("maskedDestination", useEmail2fa ? email : string.Empty);
             send2fa.AddParameter("_eventId", "submit");
 
             var submitResponse = this.Post(send2fa);
-            var oneTimeCode = await on2fa();
 
-            if (string.IsNullOrEmpty(oneTimeCode) || submitResponse.ResponseUri is null)
+            if (submitResponse.ResponseUri is null)
             {
                 Log.Error("Request to send 2fa code failed with status code {code}", submitResponse.StatusCode);
                 return null;
             }
+
+            var oneTimeCode = await on2fa();
 
             var twoFaCodeReq = new RestRequest(submitResponse.ResponseUri);
             twoFaCodeReq.AddParameter("oneTimeCode", oneTimeCode);

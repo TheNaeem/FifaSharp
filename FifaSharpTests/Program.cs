@@ -34,7 +34,7 @@ if (!File.Exists(CACHE_FILE) ||
     var login = JsonSerializer.Deserialize<LoginDetails>(
      File.ReadAllText(LOGIN_FILE));
 
-    if (!await client.TryLoginAsync(login.Email, login.Password, GetOneTimeCode, CacheCookie))
+    if (!await client.TryLoginAsync(login.Email, login.Password, GetOneTimeCode, true, CacheCookie))
         return;
 }
 

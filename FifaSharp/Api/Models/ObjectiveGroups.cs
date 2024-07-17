@@ -51,7 +51,7 @@ public class ObjectiveGroups
         public object ItemData { get; set; } = default!;
 
         [JsonPropertyName("itemDataReduced")]
-        public ItemDataReduced ReducedItemData { get; set; } = default!;
+        public ItemDataReduced? ReducedItemData { get; set; }
     }
 
     public class GroupsList
@@ -186,10 +186,10 @@ public class ObjectiveGroups
         public List<string> PossiblePositions { get; set; } = default!;
 
         [JsonPropertyName("loans")]
-        public int Loans { get; set; }
+        public int? Loans { get; set; }
 
         [JsonPropertyName("loansInfo")]
-        public LoansInfo LoansInfo { get; set; } = default!;
+        public LoansInfo? LoansInfo { get; set; } = default!;
 
         [JsonPropertyName("amount")]
         public int? Amount { get; set; }

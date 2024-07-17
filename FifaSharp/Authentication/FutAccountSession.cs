@@ -159,7 +159,7 @@ public class FutAccountSession
 
         var response = await client.ExecuteAsync(request);
 
-        if (response.StatusCode == HttpStatusCode.Unauthorized && TryGetBearerToken(out _sid))
+        if (response.StatusCode == HttpStatusCode.Unauthorized && TryGetSidToken(out _sid))
         {
             request.AddOrUpdateHeader("X-UT-SID", _sid.Token);
             response = await client.ExecuteAsync(request);

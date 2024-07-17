@@ -56,10 +56,11 @@ public class FutClient
     /// <param name="email">Account email.</param>
     /// <param name="password">Account password.</param>
     /// <param name="onTwoFactorCode">Function that should return the 2fa login code if it's required.</param>
+    /// <param name="useEmail2fa">Optional parameter that if set to false, will use an Authenticator app code to 2FA. If set to true, it send a 2fa code to email to authenticate.</param>
     /// <param name="onCacheCookies">Optional function parameter that passes in the login cookies so it can be cached for future logins.</param>
     /// <returns>True if successful.</returns>
-    public bool TryLogin(string email, string password, Func<Task<string?>> onTwoFactorCode, Action<string>? onCacheCookies = null)
-        => TryLoginAsync(email, password, onTwoFactorCode, onCacheCookies).GetAwaiter().GetResult();
+    public bool TryLogin(string email, string password, Func<Task<string?>> onTwoFactorCode, bool useEmail2fa = true, Action<string>? onCacheCookies = null)
+        => TryLoginAsync(email, password, onTwoFactorCode, useEmail2fa, onCacheCookies).GetAwaiter().GetResult();
 
 
     /// <summary>
@@ -68,12 +69,13 @@ public class FutClient
     /// <param name="email">Account email.</param>
     /// <param name="password">Account password.</param>
     /// <param name="onTwoFactorCode">Function that should return the 2fa login code if it's required.</param>
+    /// <param name="useEmail2fa">Optional parameter that if set to false, will use an Authenticator app code to 2FA. If set to true, it send a 2fa code to email to authenticate.</param>
     /// <param name="onCacheCookies">Optional function parameter that passes in the login cookies so it can be cached for future logins.</param>
     /// <returns>True if successful.</returns>
-    public async Task<bool> TryLoginAsync(string email, string password, Func<Task<string?>> onTwoFactorCode, Action<string>? onCacheCookies = null)
+    public async Task<bool> TryLoginAsync(string email, string password, Func<Task<string?>> onTwoFactorCode, bool useEmail2fa = true, Action<string>? onCacheCookies = null)
     {
         var auth = new FutAuthClient();
-        var session = await auth.TryCreateSessionAsync(email, password, onTwoFactorCode);
+        var session = await auth.TryCreateSessionAsync(email, password, onTwoFactorCode, useEmail2fa);
 
         if (session is null)
             return false;
@@ -329,11 +331,21 @@ public class FutClient
 
     public async Task<List<ObjectiveGroups>?> RetrieveObjectivesAsync()
     {
-        var response = await _session.ProcessRequestAsync($"https://utas.mob.v2.prd.futc-ext.gcp.ea.com/ut/game/fc24/scmp/objective/categories/all");
+        var response = await _session.ProcessRequestAsync("https://utas.mob.v2.prd.futc-ext.gcp.ea.com/ut/game/fc24/scmp/objective/categories/all");
 
         if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
             return default;
 
         return JsonSerializer.Deserialize<List<ObjectiveGroups>>(response.Content);
+    }
+
+    public async Task<SquadBuildingChallenges?> RetrieveSbcsAsync()
+    {
+        var response = await _session.ProcessRequestAsync("https://utas.mob.v2.prd.futc-ext.gcp.ea.com/ut/game/fc24/sbs/sets");
+
+        if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
+            return default;
+
+        return JsonSerializer.Deserialize<SquadBuildingChallenges>(response.Content);
     }
 }
