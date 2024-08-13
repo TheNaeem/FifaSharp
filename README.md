@@ -1,6 +1,6 @@
 # FifaSharp
 
-## Usage
+## Usage 
 
 ```csharp
 string? GetOneTimeCode()
@@ -16,7 +16,7 @@ void CacheCookie(string cookie)
 
 var client = new FutClient();
 
-bool success = await client.TryLoginAsync("johndoe@gmail.com", "password", GetOneTimeCode, CacheCookie);
+bool success = await client.TryLoginAsync("johndoe@gmail.com", "password", GetOneTimeCode, true, CacheCookie);
 ```
 
 ## Caching Logins
