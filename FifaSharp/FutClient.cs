@@ -118,7 +118,7 @@ public class FutClient
     /// <returns>TradePile. Can be null.</returns>
     public async Task<TradePile?> RetrieveTradePileAsync()
     {
-        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/ut/game/fc24/tradepile");
+        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/tradepile");
 
         if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
             return default;
@@ -132,7 +132,7 @@ public class FutClient
     /// <returns>Fut account info. Can be null.</returns>
     public async Task<FutAccountInfo?> RetrieveAccountInfoAsync()
     {
-        var response = await _session.ProcessUserRequestAsync($"https://{EndpointDirectory.BASE_URL}/ut/game/fc24/v2/user/accountinfo?filterConsoleLogin=true&sku=FUT24WEB&returningUserGameYear=2024&clientVersion=1", timeout: 4000);
+        var response = await _session.ProcessUserRequestAsync($"https://{EndpointDirectory.BASE_URL}/v2/user/accountinfo?filterConsoleLogin=true&sku=FUT24WEB&returningUserGameYear=2024&clientVersion=1", timeout: 4000);
 
         if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
         {
@@ -174,7 +174,7 @@ public class FutClient
     /// <returns>The messsages. Can be null.</returns>
     public async Task<FutMessages?> RetrieveMessagesAsync()
     {
-        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/ut/game/fifa23/message/list/template?nucPersId={PersonaId}&screen=webfuthub");
+        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/message/list/template?nucPersId={PersonaId}&screen=webfuthub");
 
         if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
             return default;
@@ -189,7 +189,7 @@ public class FutClient
     /// <returns>The search result. Can be null.</returns>
     public async Task<TransferMarket?> QueryTransferMarketAsync(TransferMarketQuery query)
     {
-        UriBuilder uri = new($"https://{EndpointDirectory.BASE_URL}/ut/game/fc24/transfermarket");
+        UriBuilder uri = new($"https://{EndpointDirectory.BASE_URL}/transfermarket");
 
         uri.Query = $"num={query.ResultsNum}&start={query.ResultsStart}";
 
@@ -250,7 +250,7 @@ public class FutClient
 
     public async Task<BidResult?> BidOnTransferAsync(long tradeId, int amount)
     {
-        var request = new RestRequest($"https://{EndpointDirectory.BASE_URL}/ut/game/fc24/trade/{tradeId}/bid", Method.Put);
+        var request = new RestRequest($"https://{EndpointDirectory.BASE_URL}/trade/{tradeId}/bid", Method.Put);
         request.AddHeader("Content-Type", "application/json");
         request.AddHeader("Cache-Control", "no-cache");
         request.AddParameter("application/json", $"{{\"bid\":{amount}}}", ParameterType.RequestBody);
@@ -265,7 +265,7 @@ public class FutClient
 
     public async Task<UpdateTransferListStatus?> SendItemsToTransferListAsync(params long[] itemIds)
     {
-        var request = new RestRequest($"https://{EndpointDirectory.BASE_URL}/ut/game/fifa23/item", Method.Put);
+        var request = new RestRequest($"https://{EndpointDirectory.BASE_URL}/item", Method.Put);
         request.AddHeader("Content-Type", "application/json");
         request.AddHeader("Cache-Control", "no-cache");
 
@@ -300,7 +300,7 @@ public class FutClient
             }
         };
 
-        var request = new RestRequest($"https://{EndpointDirectory.BASE_URL}/ut/game/fifa23/auctionhouse", Method.Post);
+        var request = new RestRequest($"https://{EndpointDirectory.BASE_URL}/auctionhouse", Method.Post);
         request.AddHeader("Content-Type", "application/json");
         request.AddHeader("Cache-Control", "no-cache");
         request.AddParameter("application/json", JsonSerializer.Serialize(body), ParameterType.RequestBody);
@@ -321,7 +321,7 @@ public class FutClient
             slotStatus = "NOT_STARTED";
         else slotStatus = "STARTED";
 
-        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/ut/game/fc24/academy/hub?offset=0&count=100&sortOrder=asc&slotStatus={slotStatus}");
+        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/academy/hub?offset=0&count=100&sortOrder=asc&slotStatus={slotStatus}");
 
         if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
             return default;
@@ -331,7 +331,7 @@ public class FutClient
 
     public async Task<List<ObjectiveGroups>?> RetrieveObjectivesAsync()
     {
-        var response = await _session.ProcessRequestAsync("https://utas.mob.v2.prd.futc-ext.gcp.ea.com/ut/game/fc24/scmp/objective/categories/all");
+        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/scmp/objective/categories/all");
 
         if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
             return default;
@@ -341,11 +341,34 @@ public class FutClient
 
     public async Task<SquadBuildingChallenges?> RetrieveSbcsAsync()
     {
-        var response = await _session.ProcessRequestAsync("https://utas.mob.v2.prd.futc-ext.gcp.ea.com/ut/game/fc24/sbs/sets");
+        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/sbs/sets");
 
         if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
             return default;
 
         return JsonSerializer.Deserialize<SquadBuildingChallenges>(response.Content);
+    }
+
+    public async Task<SbcChallenges?> RetrieveSbcChallengesAsync(int id)
+    {
+        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/sbs/setId/{id}/challenges");
+
+        if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
+            return default;
+
+        return JsonSerializer.Deserialize<SbcChallenges>(response.Content);
+    }
+
+    /// <summary>
+    /// Note: If even just one id in the query is invalid, the response will be empty.
+    /// </summary>
+    public async Task<List<PlayerAttributes>?> RetrievePlayerAttributesAsync(params int[] playerIds)
+    {
+        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/attributes/metadata?defIds={string.Join(",", playerIds)}");
+
+        if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
+            return default;
+
+        return JsonSerializer.Deserialize<List<PlayerAttributes>>(response.Content);
     }
 }
