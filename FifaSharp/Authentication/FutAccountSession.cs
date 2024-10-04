@@ -230,7 +230,11 @@ public class FutAccountSession
             return default;
         }
 
+        string skuPrefix = $"FFA{EndpointDirectory.GAME_YEAR}";
         _gameSku = club.SkuAccessList.First().Key;
+
+        if (!_gameSku.Contains(skuPrefix))
+            _gameSku = skuPrefix + _gameSku.Substring(skuPrefix.Length);
 
         return persona;
     }

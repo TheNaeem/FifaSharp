@@ -7,63 +7,140 @@ using System.Threading.Tasks;
 
 namespace FifaSharp.Api.Models;
 
-
 public class PurchasedItems
 {
     [JsonPropertyName("itemData")]
-    public Itemdata[] Items { get; set; }
+    public List<ItemData> Items { get; set; } = default!;
 
     [JsonPropertyName("duplicateItemIdList")]
-    public DuplicateItem[] DuplicateItemIdList { get; set; }
+    public List<DuplicateItemIdList> DuplicateItems { get; set; } = default!;
 
-    public class Itemdata
+    public class DuplicateItemIdList
     {
-        public long id { get; set; }
-        public int timestamp { get; set; }
-        public string formation { get; set; }
-        public bool untradeable { get; set; }
-        public int assetId { get; set; }
-        public int rating { get; set; }
-        public string itemType { get; set; }
-        public int resourceId { get; set; }
-        public int owners { get; set; }
-        public int discardValue { get; set; }
-        public string itemState { get; set; }
-        public int cardsubtypeid { get; set; }
-        public int lastSalePrice { get; set; }
-        public string injuryType { get; set; }
-        public int injuryGames { get; set; }
-        public string preferredPosition { get; set; }
-        public int contract { get; set; }
-        public int teamid { get; set; }
-        public int rareflag { get; set; }
-        public int playStyle { get; set; }
-        public int leagueId { get; set; }
-        public int assists { get; set; }
-        public int lifetimeAssists { get; set; }
-        public int loyaltyBonus { get; set; }
-        public int pile { get; set; }
-        public int nation { get; set; }
-        public int marketDataMinPrice { get; set; }
-        public int marketDataMaxPrice { get; set; }
-        public int resourceGameYear { get; set; }
-        public string guidAssetId { get; set; }
-        public int[] groups { get; set; }
-        public int[] attributeArray { get; set; }
-        public int[] statsArray { get; set; }
-        public int[] lifetimeStatsArray { get; set; }
-        public int skillmoves { get; set; }
-        public int weakfootabilitytypecode { get; set; }
-        public int attackingworkrate { get; set; }
-        public int defensiveworkrate { get; set; }
-        public int preferredfoot { get; set; }
-        public string[] possiblePositions { get; set; }
+        [JsonPropertyName("itemId")]
+        public int ItemId { get; set; }
+
+        [JsonPropertyName("duplicateItemId")]
+        public long DuplicateItemId { get; set; }
     }
 
-    public class DuplicateItem
+    public class ItemData
     {
-        public long itemId { get; set; }
-        public long duplicateItemId { get; set; }
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+
+        [JsonPropertyName("timestamp")]
+        public int Timestamp { get; set; }
+
+        [JsonPropertyName("formation")]
+        public string Formation { get; set; } = default!;
+
+        [JsonPropertyName("untradeable")]
+        public bool Untradeable { get; set; }
+
+        [JsonPropertyName("assetId")]
+        public int AssetId { get; set; }
+
+        [JsonPropertyName("rating")]
+        public int Rating { get; set; }
+
+        [JsonPropertyName("itemType")]
+        public string ItemType { get; set; } = default!;
+
+        [JsonPropertyName("resourceId")]
+        public int ResourceId { get; set; }
+
+        [JsonPropertyName("owners")]
+        public int Owners { get; set; }
+
+        [JsonPropertyName("discardValue")]
+        public int DiscardValue { get; set; }
+
+        [JsonPropertyName("cardsubtypeid")]
+        public int CardSubTypeId { get; set; }
+
+        [JsonPropertyName("lastSalePrice")]
+        public int LastSalePrice { get; set; }
+
+        [JsonPropertyName("injuryType")]
+        public string InjuryType { get; set; } = default!;
+
+        [JsonPropertyName("injuryGames")]
+        public int InjuryGames { get; set; }
+
+        [JsonPropertyName("preferredPosition")]
+        public string PreferredPosition { get; set; } = default!;
+
+        [JsonPropertyName("statsList")]
+        public List<object> StatsList { get; set; } = default!;
+
+        [JsonPropertyName("lifetimeStats")]
+        public List<object> LifetimeStats { get; set; } = default!;
+
+        [JsonPropertyName("contract")]
+        public int Contract { get; set; }
+
+        [JsonPropertyName("teamid")]
+        public int TeamId { get; set; }
+
+        [JsonPropertyName("rareflag")]
+        public int RareFlag { get; set; }
+
+        [JsonPropertyName("playStyle")]
+        public int PlayStyle { get; set; }
+
+        [JsonPropertyName("leagueId")]
+        public int LeagueId { get; set; }
+
+        [JsonPropertyName("loyaltyBonus")]
+        public int LoyaltyBonus { get; set; }
+
+        [JsonPropertyName("pile")]
+        public int Pile { get; set; }
+
+        [JsonPropertyName("nation")]
+        public int Nation { get; set; }
+
+        [JsonPropertyName("resourceGameYear")]
+        public int ResourceGameYear { get; set; }
+
+        [JsonPropertyName("groups")]
+        public List<int> Groups { get; set; } = default!;
+
+        [JsonPropertyName("attributeArray")]
+        public List<int> AttributeArray { get; set; } = default!;
+
+        [JsonPropertyName("skillmoves")]
+        public int Skillmoves { get; set; }
+
+        [JsonPropertyName("weakfootabilitytypecode")]
+        public int WeakFootAbilityTypeCode { get; set; }
+
+        [JsonPropertyName("attackingworkrate")]
+        public int AttackingWorkRate { get; set; }
+
+        [JsonPropertyName("defensiveworkrate")]
+        public int DefensiveWorkRate { get; set; }
+
+        [JsonPropertyName("preferredfoot")]
+        public int PreferredFoot { get; set; }
+
+        [JsonPropertyName("possiblePositions")]
+        public List<string> PossiblePositions { get; set; } = default!;
+
+        [JsonPropertyName("gender")]
+        public int Gender { get; set; }
+
+        [JsonPropertyName("guidAssetId")]
+        public string GuidAssetId { get; set; } = default!;
+
+        [JsonPropertyName("baseTraits")]
+        public List<int> BaseTraits { get; set; } = default!;
+
+        [JsonPropertyName("iconTraits")]
+        public List<int> IconTraits { get; set; } = default!;
     }
 }
+
+
 

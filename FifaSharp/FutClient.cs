@@ -1,6 +1,7 @@
 ﻿using FifaSharp.Api;
 using FifaSharp.Api.Enums;
 using FifaSharp.Api.Models;
+using FifaSharp.Api.Schema;
 using FifaSharp.Authentication;
 using RestSharp;
 using Serilog;
@@ -132,7 +133,7 @@ public class FutClient
     /// <returns>Fut account info. Can be null.</returns>
     public async Task<FutAccountInfo?> RetrieveAccountInfoAsync()
     {
-        var response = await _session.ProcessUserRequestAsync($"https://{EndpointDirectory.BASE_URL}/v2/user/accountinfo?filterConsoleLogin=true&sku=FUT24WEB&returningUserGameYear=2024&clientVersion=1", timeout: 4000);
+        var response = await _session.ProcessUserRequestAsync($"https://{EndpointDirectory.BASE_URL}/v2/user/accountinfo?filterConsoleLogin=true&sku=FUT25WEB&returningUserGameYear=2025&clientVersion=1", timeout: 4000);
 
         if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
         {
@@ -370,5 +371,80 @@ public class FutClient
             return default;
 
         return JsonSerializer.Deserialize<List<PlayerAttributes>>(response.Content);
+    }
+
+    public async Task<FutSquad?> RetrieveActiveSquadAsync()
+    {
+        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/squad/active");
+
+        if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
+            return default;
+
+        return JsonSerializer.Deserialize<FutSquad>(response.Content);
+    }
+
+    public async Task<FeaturedSquads?> RetrieveFeaturedSquadHistoryAsync(string featureConsumerId = "sqbttotw")
+    {
+        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/featuredsquad/fullhistory?featureConsumerId={featureConsumerId}");
+
+        if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
+            return default;
+
+        return JsonSerializer.Deserialize<FeaturedSquads>(response.Content);
+    }
+
+    public async Task<FutSquad?> RetrieveFeaturedSquadByIdAsync(int id, string featureConsumerId = "sqbttotw")
+    {
+        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/featuredsquad/{id}?featureConsumerId={featureConsumerId}");
+
+        if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
+            return default;
+
+        return JsonSerializer.Deserialize<FutSquad>(response.Content);
+    }
+
+    public async Task<UnassignedItems?> RetrieveUnassignedItemsAsync()
+    {
+        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/purchased/items");
+
+        if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
+            return default;
+
+        return JsonSerializer.Deserialize<UnassignedItems>(response.Content);
+    }
+
+    public async Task<PurchasedItems?> OpenPlayerPickAsync(long id)
+    {
+        var body = new ApplyItemBody();
+
+        var request = new RestRequest($"https://{EndpointDirectory.BASE_URL}/item/{id}", Method.Post);
+        request.AddParameter("application/json", JsonSerializer.Serialize(body), ParameterType.RequestBody);
+
+        var response = await _session.ProcessRequestAsync(request);
+
+        if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
+            return default;
+
+        return JsonSerializer.Deserialize<PurchasedItems>(response.Content);
+    }
+
+    public async Task<SeasonPass?> RetrieveSeasonPassAsync()
+    {
+        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/scmp/campaign?type=active");
+
+        if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
+            return default;
+
+        return JsonSerializer.Deserialize<SeasonPass>(response.Content);
+    }
+
+    public async Task<RushEvents?> RetrieveRushEventsAsync()
+    {
+        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/social/hub");
+
+        if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
+            return default;
+
+        return JsonSerializer.Deserialize<RushEvents>(response.Content);
     }
 }

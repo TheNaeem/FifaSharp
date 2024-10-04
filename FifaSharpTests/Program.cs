@@ -38,4 +38,6 @@ if (!File.Exists(CACHE_FILE) ||
         return;
 }
 
-Console.WriteLine($"Logged into {client.PersonaName}");
+Console.WriteLine($"Logged into {client.PersonaName}\n\n\n");
+
+Console.WriteLine();
