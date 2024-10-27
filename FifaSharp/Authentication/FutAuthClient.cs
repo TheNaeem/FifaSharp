@@ -73,21 +73,40 @@ public class FutAuthClient : RestClient
 
     public async Task<FutAccountSession?> TryCreateSessionAsync(string email, string pw, Func<Task<string?>> on2fa, bool useEmail2fa)
     {
-        if (!await TryRetrieveCookiesAsync() || !await TryFindSessionIdAsync())
+        if (!await TryRetrieveCookiesAsync())
             return null;
 
-        var loginResponse = await ExecuteAsync(new("https://signin.ea.com/p/juno/login?fid=" + SessionId));
+        var fidResponse = await ExecuteAsync(new(EndpointDirectory.CREATE_AUTH_FID));
 
-        if (!loginResponse.IsSuccessful || loginResponse.Cookies is null || loginResponse.ResponseUri is null)
+        if (!fidResponse.IsSuccessful || string.IsNullOrEmpty(fidResponse.Content))
         {
-            Log.Error("Login response failed with status code {code}", loginResponse.StatusCode);
+            Log.Error("Response to get FID failed with status code {code}", fidResponse.StatusCode);
             return null;
         }
 
+        var fidMatches = Regex.Matches(fidResponse.Content, "'fid': \"(.*?)\"");
+
+        if (fidMatches.Count <= 0)
+        {
+            Log.Error("Could not find FID in response. Returning.");
+            return null;
+        }
+
+        SessionId = fidMatches.First().Value.Split('\"')[1];
+
+        //var loginResponse = await ExecuteAsync(new("https://signin.ea.com/p/juno/login?fid=" + SessionId));
+
+        //if (!loginResponse.IsSuccessful || loginResponse.Cookies is null || loginResponse.ResponseUri is null)
+        //{
+        //    Log.Error("Login response failed with status code {code}", loginResponse.StatusCode);
+        //    return null;
+        //}
+
         //UpdateCookies(loginResponse.Cookies, "signin-cookie", "JSESSIONID");
 
-        var executeRequest = new RestRequest(loginResponse.ResponseUri);
-        await ExecuteAsync(executeRequest);
+        //var executeRequest = new RestRequest(loginResponse.ResponseUri);
+        var executeRequest = new RestRequest(fidResponse.ResponseUri);
+        //await ExecuteAsync(executeRequest);
 
         executeRequest.AddParameter("email", email);
         executeRequest.AddParameter("regionCode", "US");
@@ -96,7 +115,6 @@ public class FutAuthClient : RestClient
         executeRequest.AddParameter("_eventId", "submit");
         executeRequest.AddParameter("cid", string.Empty);
         executeRequest.AddParameter("showAgeUp", true);
-        executeRequest.AddParameter("thirdPartyCaptchaResponse", string.Empty);
         executeRequest.AddParameter("loginMethod", "emailPassword");
         executeRequest.AddParameter("_rememberMe", "on");
         executeRequest.AddParameter("rememberMe", "on");
@@ -109,26 +127,44 @@ public class FutAuthClient : RestClient
             return null;
         }
 
-        if (executeResponse.Content.Contains("Two Factor Log In"))
+        //if (executeResponse.Content.Contains("Two Factor Log In"))
         {
             Log.Information("2fa required for account.");
 
-            RestRequest send2fa = new(executeResponse.ResponseUri); // sends the code to the email
-            send2fa.AddParameter("codeType", useEmail2fa ? "EMAIL" : "APP");
-            send2fa.AddParameter("maskedDestination", useEmail2fa ? email : string.Empty);
-            send2fa.AddParameter("_eventId", "submit");
+            RestRequest submitRequest = new(executeResponse.ResponseUri);
+            submitRequest.AddParameter("email", email);
+            submitRequest.AddParameter("password", pw);
+            submitRequest.AddParameter("_eventId", "submit");
+            submitRequest.AddParameter("cid", string.Empty);
+            submitRequest.AddParameter("showAgeUp", true);
+            submitRequest.AddParameter("thirdPartyCaptchaResponse", string.Empty);
+            submitRequest.AddParameter("loginMethod", "emailPassword");
 
-            var submitResponse = this.Post(send2fa);
+            var submitResponse = this.Post(submitRequest);
 
             if (submitResponse.ResponseUri is null)
             {
-                Log.Error("Request to send 2fa code failed with status code {code}", submitResponse.StatusCode);
+                Log.Error("Request to submit code failed with status code {code}", submitResponse.StatusCode);
+                return null;
+            }
+
+            RestRequest send2fa = new(submitResponse.ResponseUri); // sends the code to the email
+            send2fa.AddParameter("codeType", useEmail2fa ? "EMAIL" : "APP");
+            send2fa.AddParameter("_codeType", useEmail2fa ? "EMAIL" : "APP");
+            send2fa.AddParameter("maskedDestination", useEmail2fa ? email : string.Empty);
+            send2fa.AddParameter("_eventId", "submit");
+
+            var send2faRes = this.Post(send2fa);
+
+            if (send2faRes.ResponseUri is null)
+            {
+                Log.Error("Request to send 2fa code failed with status code {code}", send2faRes.StatusCode);
                 return null;
             }
 
             var oneTimeCode = await on2fa();
 
-            var twoFaCodeReq = new RestRequest(submitResponse.ResponseUri);
+            var twoFaCodeReq = new RestRequest(send2faRes.ResponseUri);
             twoFaCodeReq.AddParameter("oneTimeCode", oneTimeCode);
             twoFaCodeReq.AddParameter("_trustThisDevice", "on");
             twoFaCodeReq.AddParameter("trustThisDevice", "on");
