@@ -314,6 +314,21 @@ public class FutClient
         return JsonSerializer.Deserialize<ListTransferStatus>(response.Content);
     }
 
+    public async Task<ClubSearchResult?> QueryClubAsync(ClubSearchQuery query)
+    {
+        var request = new RestRequest($"https://{EndpointDirectory.BASE_URL}/club", Method.Post);
+        request.AddHeader("Content-Type", "application/json");
+        request.AddHeader("Cache-Control", "no-cache");
+        request.AddParameter("application/json", JsonSerializer.Serialize(query), ParameterType.RequestBody);
+
+        var response = await _session.ProcessRequestAsync(request);
+
+        if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
+            return new(response.StatusCode);
+
+        return JsonSerializer.Deserialize<ClubSearchResult>(response.Content);
+    }
+
     public async Task<Evolutions?> RetrieveEvolutionsAsync(EvolutionsStatus status = EvolutionsStatus.NotStarted)
     {
         string slotStatus = string.Empty;
