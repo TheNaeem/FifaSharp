@@ -133,7 +133,7 @@ public class FutClient
     /// <returns>Fut account info. Can be null.</returns>
     public async Task<FutAccountInfo?> RetrieveAccountInfoAsync()
     {
-        var response = await _session.ProcessUserRequestAsync($"https://{EndpointDirectory.BASE_URL}/v2/user/accountinfo?filterConsoleLogin=true&sku=FUT25WEB&returningUserGameYear=2025&clientVersion=1", timeout: 4000);
+        var response = await _session.ProcessUserRequestAsync($"https://{EndpointDirectory.BASE_URL}/v2/user/accountinfo?filterConsoleLogin=true&sku=FUT{EndpointDirectory.GAME_YEAR}WEB&returningUserGameYear=20{EndpointDirectory.GAME_YEAR}&clientVersion=1", timeout: 4000);
 
         if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
         {
@@ -181,6 +181,21 @@ public class FutClient
             return default;
 
         return JsonSerializer.Deserialize<FutMessages>(response.Content);
+    }
+
+    public async Task<List<PlayerItemData>> QueryConceptsAsync(ConceptsQuery query)
+    {
+        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/defid?{query.BuildQuery()}");
+
+        if (response is null || !response.IsSuccessful || string.IsNullOrEmpty(response.Content))
+            return new();
+
+        using var doc = JsonDocument.Parse(response.Content);
+
+        if (doc.RootElement.TryGetProperty("itemData", out var itemData))
+            return itemData.Deserialize<List<PlayerItemData>>() ?? new();
+
+        return new();
     }
 
     /// <summary>

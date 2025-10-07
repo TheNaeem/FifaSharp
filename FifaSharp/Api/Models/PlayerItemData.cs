@@ -8,7 +8,7 @@ namespace FifaSharp.Api.Models;
 
 using System.Text.Json.Serialization;
 
-public class PlayerItemData
+public class PlayerItemData // TODO: make this universal
 {
     [JsonPropertyName("id")]
     public long Id { get; set; }
@@ -122,7 +122,7 @@ public class PlayerItemData
     public List<int> BaseTraits { get; set; } = default!;
 
     [JsonPropertyName("iconTraits")]
-    public List<int> IconTraits { get; set; } = default!;
+    public List<int>? IconTraits { get; set; } = default!;
 
     [JsonPropertyName("groups")]
     public List<int> Groups { get; set; } = default!;

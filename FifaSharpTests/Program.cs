@@ -1,4 +1,5 @@
 ﻿using FifaSharp;
+using FifaSharp.Api.Enums;
 using FifaSharp.Api.Models;
 using FifaSharpTests;
 using System.Net;
@@ -39,5 +40,3 @@ if (!File.Exists(CACHE_FILE) ||
 }
 
 Console.WriteLine($"Logged into {client.PersonaName}\n\n\n");
-
-Console.WriteLine();

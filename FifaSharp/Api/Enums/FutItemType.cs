@@ -10,3 +10,13 @@ public enum FutItemType
 {
     Player
 }
+
+public static class FutItemTypeExtensions
+{
+    public static string GetString(this FutItemType item)
+        => item switch
+        {
+            FutItemType.Player => "player",
+            _ => "player"
+        };
+}

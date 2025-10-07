@@ -2,10 +2,10 @@
 
 public static class EndpointDirectory
 {
-    public const int GAME_YEAR = 25;
+    public const int GAME_YEAR = 26;
     public const string HOSTNAME = "utas.mob.v4.prd.futc-ext.gcp.ea.com";
-    public const string BASE_URL = $"{HOSTNAME}/ut/game/fc25";
-    public const string CLIENT_ID = "FC25_JS_WEB_APP";
+    public const string BASE_URL = $"{HOSTNAME}/ut/game/fc26";
+    public const string CLIENT_ID = "FC26_JS_WEB_APP";
     public const string CREATE_TOKEN = $"https://accounts.ea.com/connect/auth?hide_create=true&display=web2%2Flogin&scope=basic.identity+offline+signin+basic.entitlement+basic.persona&release_type=prod&response_type=token&redirect_uri=https%3A%2F%2Fwww.ea.com%2Fea-sports-fc%2Fultimate-team%2Fweb-app%2Fauth.html&accessToken=&locale=en_US&prompt=login&client_id={CLIENT_ID}&fid={{0}}";
     public const string CREATE_ACCESS_TOKEN = $"https://accounts.ea.com/connect/auth?response_type=token&redirect_uri=nucleus%3Arest&prompt=none&client_id={CLIENT_ID}";
     public const string CREATE_ORIGIN_ACCESS_TOKEN = "https://accounts.ea.com/connect/auth?response_type=token&redirect_uri=nucleus%3Arest&prompt=none&client_id=ORIGIN_JS_SDK";

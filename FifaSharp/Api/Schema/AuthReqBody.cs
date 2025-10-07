@@ -5,14 +5,14 @@ public class AuthReqBody
 {
     public int clientVersion = 1;
     public string ds = string.Empty;
-    public string gameSku = "FFA25XSX"; // TODO:
+    public string gameSku = $"FFA{EndpointDirectory.GAME_YEAR}XSX"; // TODO:
     public Identification identification = new();
     public bool isReadOnly = false;
     public string locale = "en-US";
     public string method = "authcode";
     public UInt64 nucleusPersonaId = 0;
     public int priorityLevel = 4;
-    public string sku = "FUT25WEB";
+    public string sku = $"FUT{EndpointDirectory.GAME_YEAR}WEB";
 
     public class Identification
     {
