@@ -380,6 +380,20 @@ public class FutClient
         return JsonSerializer.Deserialize<SquadBuildingChallenges>(response.Content);
     }
 
+    /// <summary>
+    /// Retrieves the store purchase groups, including active packs and other store items.
+    /// The caller is responsible for selecting live card packs from the complete response.
+    /// </summary>
+    public async Task<StorePurchaseGroups?> RetrieveStorePurchaseGroupsAsync()
+    {
+        var response = await _session.ProcessRequestAsync(EndpointDirectory.STORE_PURCHASE_GROUPS);
+
+        if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
+            return default;
+
+        return JsonSerializer.Deserialize<StorePurchaseGroups>(response.Content);
+    }
+
     public async Task<SbcChallenges?> RetrieveSbcChallengesAsync(int id)
     {
         var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/sbs/setId/{id}/challenges");
