@@ -386,7 +386,7 @@ public class FutClient
     /// </summary>
     public async Task<StorePurchaseGroups?> RetrieveStorePurchaseGroupsAsync()
     {
-        var response = await _session.ProcessRequestAsync(EndpointDirectory.STORE_PURCHASE_GROUPS);
+        var response = await _session.ProcessRequestAsync($"https://{EndpointDirectory.BASE_URL}/store/purchaseGroup/all?ppInfo=true&categoryInfo=true");
 
         if (!response.IsSuccessful || string.IsNullOrEmpty(response.Content))
             return default;
