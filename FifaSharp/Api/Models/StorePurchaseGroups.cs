@@ -345,6 +345,9 @@ public sealed class StoreBundleItem
     [JsonPropertyName("itemData")]
     public JsonElement? ItemData { get; set; }
 
+    [JsonPropertyName("eventTokenBundleItemInfo")]
+    public JsonElement? EventTokenBundleItemInfo { get; set; }
+
     [JsonPropertyName("id")]
     public long Id { get; set; }
 
@@ -359,6 +362,9 @@ public sealed class StoreBundleItem
 
     [JsonPropertyName("name")]
     public string? Name { get; set; }
+
+    [JsonExtensionData]
+    public Dictionary<string, JsonElement>? AdditionalFields { get; set; }
 }
 
 public sealed class StoreExternalPrice
